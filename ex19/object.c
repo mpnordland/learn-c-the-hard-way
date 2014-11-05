@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "object.h"
 #include <assert.h>
+#include <errno.h>
+
 
 void Object_destroy(void *self) {
      Object *obj = self;
@@ -14,6 +16,8 @@ void Object_destroy(void *self) {
 
 void Object_describe(void *self){
     Object *obj = self;
+    assert(obj != NULL);
+    assert(obj->description != NULL);
     printf("%s.\n", obj->description);
 }
 
@@ -27,12 +31,13 @@ void *Object_move(void *self, Direction direction){
     return NULL;
 }
 
-int Object_attack (void *self, int damage){
+AttackResult Object_attack (void *self, int damage){
     printf("You can't attack that.\n");
-    return 0;
+    return Nothing;
 }
 
 void *Object_new(size_t size, Object proto, char *description){
+    assert(description != NULL);
     //setup the default function in case they aren't set
     if (!proto.init) proto.init = Object_init;
     if (!proto.describe) proto.describe = Object_describe;
@@ -43,10 +48,12 @@ void *Object_new(size_t size, Object proto, char *description){
     // this seems weird, but we can make a struct of one size,
     // then point a different pointer at it to "cast" it
     Object *el = calloc(1, size);
+    assert(el != NULL);
     *el = proto;
 
     // copy the description over
     el->description = strdup(description);
+    assert(el->description != NULL);
 
     //initialize it with wtaever init we were given
 
@@ -56,6 +63,7 @@ void *Object_new(size_t size, Object proto, char *description){
         return NULL;
     } else {
         //all done, we made an object of any type
+        assert(el != NULL);
         return el;
     }
 }

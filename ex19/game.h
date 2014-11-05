@@ -1,7 +1,9 @@
-#ifndef _ex19_h
-#define _ex19_h
+#ifndef _game_h
+#define _game_h
 
 #include "object.h"
+
+
 
 struct Monster {
     Object proto;
@@ -10,8 +12,9 @@ struct Monster {
 
 typedef struct Monster Monster;
 
-int Monster_attack(void *self, int damage);
+AttackResult Monster_attack(void *self, int damage);
 int Monster_init(void *self);
+Object MonsterProto;
 
 struct Room {
     Object proto;
@@ -27,8 +30,10 @@ struct Room {
 typedef struct Room Room;
 
 void *Room_move(void *self, Direction direction);
-int Room_attack(void *self, int damage);
+AttackResult Room_attack(void *self, int damage);
 int Room_init(void *self);
+Object RoomProto;
+
 
 struct Map {
     Object proto;
@@ -37,8 +42,11 @@ struct Map {
 };
 
 typedef struct Map Map;
-void *Map_move(void *self, Direction direction);
-int Map_attack(void *self, int damage);
 int Map_init(void *self);
+void *Map_move(void *self, Direction direction);
+AttackResult Map_attack(void *self, int damage);
+Object MapProto;
+
+int process_input(Map *game);
 
 #endif
